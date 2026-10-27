@@ -1,9 +1,9 @@
 // ============================================================
 // ★ ここだけ書き換えます(手順は SETUP.md)
 // ============================================================
-self.APP_CONFIG = {
+self.APP_CONFIG = {AIzaSyCE7R5ho-34sZRLll3fPhAKROiPy6a4OT0
   // Apps Script の「ウェブアプリ」のURL(デプロイした /exec で終わるもの)
-  gasUrl: 'https://script.google.com/macros/s/ここにデプロイIDを入れる/exec',
+  gasUrl: 'https://script.google.com/macros/s/AKfycbwjHAy4U_RLuD0N7-QyQhG9JHfDT0iWrxR8hk8KVCLulMCmxeuEvQs26t7v6hQilFq9/exec',
 
   // アプリの名前(画面のタイトル・通知に使う)
   appName: 'juki2023 base',
