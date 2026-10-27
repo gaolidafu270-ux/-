@@ -3,7 +3,7 @@
 // ============================================================
 self.APP_CONFIG = {
   // Apps Script の「ウェブアプリ」のURL(デプロイした /exec で終わるもの)
-  gasUrl: 'https://script.google.com/macros/s/AKfycbwjHAy4U_RLuD0N7-QyQhG9JHfDT0iWrxR8hk8KVCLulMCmxeuEvQs26t7v6hQilFq9/exec',
+  gasUrl: 'https://script.google.com/a/macros/city.higashiosaka-osk.ed.jp/s/AKfycbz-BtbObzXHkEUtW2d2ExizzGmwbIyvKBXukJ56xjkOKkKHDOSXIHZgR6rttIGZKMMA/exec',
 
   // 開き方。'redirect' = アプリ本体のページへ直接移動する(アクセスが「全員」にできない学校のアカウント用)
   //        'frame'    = この外枠の中にアプリを表示する(アクセスが「全員」のとき用)
