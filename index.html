@@ -33,6 +33,7 @@
   var C = self.APP_CONFIG || {};
   var frame = document.getElementById('app');
   var bar = document.getElementById('bar');
+  var redirectMode = (C.mode === 'redirect'); // 枠に入れず、アプリ本体のページへ直接移動する(ログインが必要なアプリ用)
   var current = '';          // いま iframe に渡している通知トークン
   var reg = null, messaging = null;
 
@@ -42,7 +43,15 @@
   function configured() { return C.firebase && C.firebase.apiKey && C.firebase.messagingSenderId && C.vapidKey; }
 
   // アプリ本体を開く。通知トークンがあれば、URLの ?pt= に付けて渡す(本体がそれを読んでサーバーに登録する)
+  function go(token) {
+    try {
+      var u = new URL(C.gasUrl);
+      if (token) u.searchParams.set('pt', token);
+      location.replace(u.toString());
+    } catch (e) { say('config.js の gasUrl を確認してください'); }
+  }
   function load(token) {
+    if (redirectMode) { go(token); return; }
     if (token === current && frame.src) return;
     current = token || '';
     try {
@@ -74,35 +83,51 @@
 
   function offerButton() {
     if (!('Notification' in window) || !('serviceWorker' in navigator)) { say(''); return; }
+    var skip = redirectMode ? '<small><a href="#" id="skip" style="color:#bbb">通知なしで開く</a></small>' : '';
+    var bindSkip = function() { var s = document.getElementById('skip'); if (s) s.onclick = function(e) { e.preventDefault(); go(''); }; };
     if (isIOS() && !isStandalone()) {
-      say('📲 通知を使うには、共有ボタン →「ホーム画面に追加」で追加して、そのアイコンから開いてください');
+      say('📲 通知を使うには、共有ボタン →「ホーム画面に追加」で追加して、そのアイコンから開いてください' + skip);
+      bindSkip();
       return;
     }
-    if (Notification.permission === 'denied') { say(''); return; }
-    say('<button type="button" id="enable">🔔 通知をオンにする</button><small>アプリを閉じていてもメッセージが届きます</small>');
+    if (Notification.permission === 'denied') { if (redirectMode) go(''); else say(''); return; }
+    say('<button type="button" id="enable">🔔 通知をオンにする</button><small>アプリを閉じていてもメッセージが届きます</small>' + skip);
     document.getElementById('enable').onclick = enable;
+    bindSkip();
   }
 
   async function boot() {
     var saved = '';
     try { saved = localStorage.getItem('fcm_token') || ''; } catch (e) {}
-    // 以前に許可済みなら、すぐ本体を開く(トークンの更新は裏で確認する)
-    load(('Notification' in window) && Notification.permission === 'granted' ? saved : '');
+    var granted = ('Notification' in window) && Notification.permission === 'granted';
+    // 枠に表示する方式: 以前に許可済みなら、すぐ本体を開く(トークンの更新は裏で確認する)
+    if (!redirectMode) load(granted ? saved : '');
 
-    if (!configured()) { say('config.js の Firebase の設定がまだです(SETUP.md を見てください)'); return; }
-    if (!('serviceWorker' in navigator) || !('Notification' in window)) return;
+    if (!configured()) {
+      if (redirectMode) { go(''); return; }
+      say('config.js の Firebase の設定がまだです(SETUP.md を見てください)'); return;
+    }
+    if (!('serviceWorker' in navigator) || !('Notification' in window)) { if (redirectMode) go(''); return; }
     try {
       reg = await navigator.serviceWorker.register('firebase-messaging-sw.js');
       firebase.initializeApp(C.firebase);
       messaging = firebase.messaging();
-    } catch (e) { say('通知の準備に失敗しました: ' + String(e && e.message || e).slice(0, 80)); return; }
+    } catch (e) {
+      if (redirectMode) { go(''); return; }
+      say('通知の準備に失敗しました: ' + String(e && e.message || e).slice(0, 80)); return;
+    }
 
     if (Notification.permission === 'granted') {
       try {
+        if (redirectMode) { // 最新のトークンを(最大3秒待って)付けて、アプリ本体へ移動する
+          var latest = await Promise.race([fetchToken(), new Promise(function(r) { setTimeout(function() { r(saved); }, 3000); })]);
+          go(latest || saved);
+          return;
+        }
         var t = await fetchToken();
         if (t && t !== current) load(t); // トークンが変わっていたら、開き直す
         say('');
-      } catch (e) { /* 次回に再挑戦 */ }
+      } catch (e) { if (redirectMode) go(saved); /* 枠に表示する方式は、次回に再挑戦 */ }
     } else {
       offerButton();
     }
