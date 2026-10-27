@@ -19,5 +19,5 @@ self.APP_CONFIG = {AIzaSyCE7R5ho-34sZRLll3fPhAKROiPy6a4OT0
   },
 
   // Firebase コンソール → プロジェクトの設定 → Cloud Messaging → ウェブプッシュ証明書 の「キーペア」
-  vapidKey: ''
+  vapidKey: 'BHf-yZhX_rmAe10CB2iJQUVd8J4OYgSCYBir4s2GX_nOEPWcnBpPuvz2w3CqPhmmydZr5VY0Ik4keW36s_zZ11M'
 };
