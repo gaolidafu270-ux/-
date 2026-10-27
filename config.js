@@ -1,7 +1,7 @@
 // ============================================================
 // ★ ここだけ書き換えます(手順は SETUP.md)
 // ============================================================
-self.APP_CONFIG = {AIzaSyCE7R5ho-34sZRLll3fPhAKROiPy6a4OT0
+self.APP_CONFIG = {
   // Apps Script の「ウェブアプリ」のURL(デプロイした /exec で終わるもの)
   gasUrl: 'https://script.google.com/macros/s/AKfycbwjHAy4U_RLuD0N7-QyQhG9JHfDT0iWrxR8hk8KVCLulMCmxeuEvQs26t7v6hQilFq9/exec',
 
@@ -10,12 +10,12 @@ self.APP_CONFIG = {AIzaSyCE7R5ho-34sZRLll3fPhAKROiPy6a4OT0
 
   // Firebase コンソール → プロジェクトの設定 → 「マイアプリ」のウェブアプリの firebaseConfig の中身
   firebase: {
-    apiKey: '',
-    authDomain: '',
-    projectId: '',
-    storageBucket: '',
-    messagingSenderId: '',
-    appId: ''
+    apiKey: 'AIzaSyCE7R5ho-34sZRLll3fPhAKROiPy6a4OT0',
+    authDomain: 'juki2023-df581.firebaseapp.com',
+    projectId: 'juki2023-df581',
+    storageBucket: 'juki2023-df581.firebasestorage.app',
+    messagingSenderId: '343379242358',
+    appId: '1:343379242358:web:01463768c59ad2eee3de57'
   },
 
   // Firebase コンソール → プロジェクトの設定 → Cloud Messaging → ウェブプッシュ証明書 の「キーペア」
